@@ -10,6 +10,12 @@ import io
 import streamlit as st
 from PIL import Image
 
+from pathlib import Path
+import sys
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 from analysis.capacity import calculate_carrier_capacity
 from analysis.image_quality import calculate_mse, calculate_psnr
 from analysis.steganalysis import chi_square_attack, extract_lsb_plane

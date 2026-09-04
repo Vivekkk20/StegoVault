@@ -18,7 +18,11 @@ from core.payload import (
     PAYLOAD_TYPE_TEXT,
     TOTAL_PREFIX_SIZE,
     EnvelopeHeader,
+    SALT_SIZE,
+    NONCE_SIZE,
     StegoEnvelope,
+
+    
 )
 from crypto.encryption import (
     AUTH_TAG_SIZE_BYTES,

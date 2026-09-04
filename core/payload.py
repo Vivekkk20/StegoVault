@@ -102,7 +102,8 @@ class StegoEnvelope:
 
         if payload_type not in VALID_PAYLOAD_TYPES:
             raise InvalidPayloadError(f"Unsupported payload type: {payload_type}.")
-
+        if reserved != b"\x00\x00":
+            raise InvalidPayloadError("Unsupported or invalid reserved header flags.")
         header = EnvelopeHeader(
             version=version,
             payload_type=payload_type,

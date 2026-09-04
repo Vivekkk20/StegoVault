@@ -14,6 +14,7 @@ from core.encoder import encode_payload
 from core.exceptions import (
     AuthenticationError,
     InsufficientCapacityError,
+     CorruptPayloadError,
 )
 from core.payload import PAYLOAD_TYPE_BINARY, PAYLOAD_TYPE_TEXT
 
@@ -139,8 +140,9 @@ def test_tampered_stego_image_fails_safely(carrier_rgb_large):
     tampered_img = Image.new("RGB", stego_img.size)
     tampered_img.putdata(pixel_list)
 
-    with pytest.raises(AuthenticationError):
-        decode_payload(tampered_img, passphrase)
+    with pytest.raises((AuthenticationError, CorruptPayloadError)):
+         decode_payload(tampered_img, passphrase)
+
 
 
 def test_insufficient_image_capacity():

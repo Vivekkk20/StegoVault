@@ -12,5 +12,20 @@ StegoVault is a professional cybersecurity toolkit designed to integrate authent
 1. **Encode:** Payload -> Compression -> Authenticated Encryption (AES-256-GCM) -> Binary Envelope -> LSB Carrier Embedding -> Stego Image
 2. **Decode:** Stego Image -> Bitstream Extraction -> Envelope Parsing -> AEAD Tag Verification & Decryption -> Decompression -> Original Payload
 
+## Screenshots
+
+![Dashboard Overview](screenshots/01-dashboard.png)
+*StegoVault dashboard overview*
+
+![Secure Embedding Workflow](screenshots/02-encode.png)
+*Secure embedding configuration*
+
+![Authenticated Embedding Success](screenshots/03-encode-success.png)
+*Successful payload embedding*
+
+![Decryption and Extraction Success](screenshots/04-decode-success.png)
+*Successful payload extraction and recovery*
+
+
 ## Notice on Carrier Channels
 Social media and messaging applications (such as WhatsApp, Discord, Twitter, and Telegram) transcode, compress, or convert images to lossy formats (JPEG/WebP). This permanently strips LSB data. Carriers must be transmitted as uncompressed/lossless files (e.g., PNG, BMP).

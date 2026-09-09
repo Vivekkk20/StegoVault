@@ -9,6 +9,8 @@ from __future__ import annotations
 import math
 from PIL import Image
 
+from utils.image_utils import get_pixel_data
+
 
 def calculate_mse(image_a: Image.Image, image_b: Image.Image) -> float:
     """
@@ -25,8 +27,8 @@ def calculate_mse(image_a: Image.Image, image_b: Image.Image) -> float:
     if image_a.mode not in ("RGB", "RGBA") or image_b.mode not in ("RGB", "RGBA"):
         raise ValueError("Both images must be in RGB or RGBA mode.")
 
-    pixels_a = list(image_a.convert("RGB").getdata())
-    pixels_b = list(image_b.convert("RGB").getdata())
+    pixels_a = list(get_pixel_data(image_a.convert("RGB")))
+    pixels_b = list(get_pixel_data(image_b.convert("RGB")))
 
     total_squared_diff = 0
     total_components = len(pixels_a) * 3

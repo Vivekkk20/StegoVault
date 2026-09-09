@@ -9,6 +9,7 @@ from __future__ import annotations
 from PIL import Image
 
 from core.exceptions import InsufficientCapacityError
+from utils.image_utils import get_pixel_data
 
 
 def embed_lsb(carrier_image: Image.Image, payload: bytes) -> Image.Image:
@@ -42,7 +43,7 @@ def embed_lsb(carrier_image: Image.Image, payload: bytes) -> Image.Image:
     ]
 
     has_alpha = carrier_image.mode == "RGBA"
-    pixels = list(carrier_image.getdata())
+    pixels = list(get_pixel_data(carrier_image))
     modified_pixels = []
     bit_idx = 0
 
@@ -102,7 +103,7 @@ def extract_lsb(stego_image: Image.Image, num_bytes: int) -> bytes:
     has_alpha = stego_image.mode == "RGBA"
     extracted_bits = []
 
-    for pixel in stego_image.getdata():
+    for pixel in get_pixel_data(stego_image):
         if has_alpha:
             r, g, b, _ = pixel
         else:

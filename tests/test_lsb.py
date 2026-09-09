@@ -9,6 +9,7 @@ from PIL import Image
 
 from core.exceptions import InsufficientCapacityError
 from stego.lsb import embed_lsb, extract_lsb
+from utils.image_utils import get_pixel_data
 
 
 @pytest.fixture
@@ -48,8 +49,8 @@ def test_alpha_channel_unmodified_in_rgba(sample_rgba_image):
     payload = b"Preserve Alpha Channel"
     stego_img = embed_lsb(sample_rgba_image, payload)
 
-    orig_alpha = [p[3] for p in sample_rgba_image.getdata()]
-    stego_alpha = [p[3] for p in stego_img.getdata()]
+    orig_alpha = [p[3] for p in get_pixel_data(sample_rgba_image)]
+    stego_alpha = [p[3] for p in get_pixel_data(stego_img)]
 
     assert orig_alpha == stego_alpha
 
@@ -129,8 +130,8 @@ def test_minimal_pixel_modification(sample_rgb_image):
     payload = b"Test"
     stego_img = embed_lsb(sample_rgb_image, payload)
 
-    orig_pixels = list(sample_rgb_image.getdata())
-    stego_pixels = list(stego_img.getdata())
+    orig_pixels = list(get_pixel_data(sample_rgb_image))
+    stego_pixels = list(get_pixel_data(stego_img))
 
     for (r1, g1, b1), (r2, g2, b2) in zip(orig_pixels, stego_pixels):
         assert abs(r1 - r2) <= 1

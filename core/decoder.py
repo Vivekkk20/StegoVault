@@ -10,7 +10,7 @@ import struct
 import zlib
 from PIL import Image
 
-from core.exceptions import CorruptPayloadError
+from core.exceptions import CorruptPayloadError, InsufficientCapacityError
 from core.payload import (
     HEADER_FORMAT,
     HEADER_SIZE,
@@ -21,6 +21,7 @@ from core.payload import (
 from crypto.encryption import decrypt_payload
 from crypto.key_derivation import derive_key
 from stego.lsb import extract_lsb
+from utils.validation import validate_carrier_image, validate_passphrase
 
 
 def decode_payload(
@@ -44,6 +45,9 @@ def decode_payload(
     :raises CorruptPayloadError: If magic bytes mismatch or framing is corrupt.
     :raises InvalidPayloadError: If version or payload type is unsupported.
     """
+    validate_passphrase(passphrase)
+    validate_carrier_image(stego_image)
+
     # 1. Extract fixed header to locate magic and read ciphertext length
     header_raw = extract_lsb(stego_image, HEADER_SIZE)
     magic, version, payload_type, reserved, ciphertext_len = struct.unpack_from(
@@ -55,7 +59,13 @@ def decode_payload(
 
     # 2. Extract total required envelope bytes
     total_wire_len = TOTAL_PREFIX_SIZE + ciphertext_len
-    full_wire_bytes = extract_lsb(stego_image, total_wire_len)
+    try:
+        full_wire_bytes = extract_lsb(stego_image, total_wire_len)
+    except InsufficientCapacityError as exc:
+        raise CorruptPayloadError(
+            f"Payload framing error: header specifies {total_wire_len} bytes, "
+            f"which exceeds carrier capacity."
+        ) from exc
 
     # 3. Deserialize binary envelope
     envelope = StegoEnvelope.deserialize(full_wire_bytes)

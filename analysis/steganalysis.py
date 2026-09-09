@@ -9,6 +9,8 @@ from __future__ import annotations
 import math
 from PIL import Image
 
+from utils.image_utils import get_pixel_data
+
 
 def extract_lsb_plane(image: Image.Image, channel_index: int = 0) -> Image.Image:
     """
@@ -27,7 +29,7 @@ def extract_lsb_plane(image: Image.Image, channel_index: int = 0) -> Image.Image
         raise ValueError("Channel index must be 0 (Red), 1 (Green), or 2 (Blue).")
 
     rgb_image = image.convert("RGB")
-    pixels = list(rgb_image.getdata())
+    pixels = list(get_pixel_data(rgb_image))
 
     # Map LSB 0 -> 0 (Black), LSB 1 -> 255 (White)
     plane_data = [255 if (pixel[channel_index] & 1) else 0 for pixel in pixels]
@@ -54,7 +56,7 @@ def chi_square_attack(image: Image.Image) -> tuple[float, float]:
         raise ValueError(f"Unsupported image mode '{image.mode}'. Expected RGB or RGBA.")
 
     rgb_image = image.convert("RGB")
-    pixels = list(rgb_image.getdata())
+    pixels = list(get_pixel_data(rgb_image))
 
     # Build histogram across all RGB pixel components (0 to 255)
     histogram = [0] * 256
@@ -99,4 +101,5 @@ def _chi_square_survival(x: float, df: int) -> float:
     z = (((x / df) ** (1.0 / 3.0)) - (1.0 - s)) / math.sqrt(s)
 
     # Standard normal complementary CDF approximation: 0.5 * erfc(z / sqrt(2))
-    return 0.5 * math.erfc(z / math.sqrt(2.0))
+    cdf_val = 0.5 * math.erfc(z / math.sqrt(2.0))
+    return max(0.0, min(1.0, cdf_val))

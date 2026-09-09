@@ -24,6 +24,9 @@ def calculate_carrier_capacity(carrier_image: Image.Image) -> tuple[int, int]:
         raise ValueError(f"Unsupported image mode '{carrier_image.mode}'. Expected RGB or RGBA.")
 
     width, height = carrier_image.size
+    if width <= 0 or height <= 0:
+        raise ValueError(f"Invalid image dimensions: {width}x{height}.")
+
     total_bits = width * height * 3
     max_bytes = total_bits // 8
     safe_bytes = int(max_bytes * SAFE_CAPACITY_RATIO)

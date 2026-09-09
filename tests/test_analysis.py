@@ -8,6 +8,8 @@ from PIL import Image
 
 from analysis.image_quality import calculate_mse, calculate_psnr
 from analysis.steganalysis import chi_square_attack, extract_lsb_plane
+from analysis.capacity import calculate_carrier_capacity, payload_fits
+from utils.image_utils import get_pixel_data
 
 
 @pytest.fixture
@@ -41,7 +43,7 @@ def test_psnr_identical_images(base_rgb_image):
 def test_mse_known_deviation(base_rgb_image):
     """Verify exact MSE calculation against a known manual pixel perturbation."""
     modified = base_rgb_image.copy()
-    pixels = list(modified.getdata())
+    pixels = list(get_pixel_data(modified))
     # Modify exactly one channel of one pixel by +2
     r, g, b = pixels[0]
     pixels[0] = (r + 2, g, b)
@@ -55,7 +57,7 @@ def test_mse_known_deviation(base_rgb_image):
 def test_psnr_known_deviation(base_rgb_image):
     """Verify PSNR calculation corresponds to expected logarithmic formula."""
     modified = base_rgb_image.copy()
-    pixels = list(modified.getdata())
+    pixels = list(get_pixel_data(modified))
     r, g, b = pixels[0]
     pixels[0] = (r + 1, g, b)
     modified.putdata(pixels)
@@ -69,7 +71,7 @@ def test_psnr_known_deviation(base_rgb_image):
 def test_metrics_rgba_support(base_rgba_image):
     """Verify MSE and PSNR functions accept RGBA images seamlessly."""
     modified = base_rgba_image.copy()
-    pixels = list(modified.getdata())
+    pixels = list(get_pixel_data(modified))
     r, g, b, a = pixels[0]
     pixels[0] = (r + 1, g, b, a)
     modified.putdata(pixels)
@@ -115,7 +117,7 @@ def test_extract_lsb_plane_channel_values():
     img.putdata([(100, 0, 0), (101, 0, 0)])
 
     plane = extract_lsb_plane(img, channel_index=0)
-    plane_pixels = list(plane.getdata())
+    plane_pixels = list(get_pixel_data(plane))
 
     assert plane_pixels[0] == 0
     assert plane_pixels[1] == 255
@@ -157,3 +159,24 @@ def test_chi_square_unsupported_mode():
     gray_img = Image.new("L", (10, 10))
     with pytest.raises(ValueError, match="Unsupported image mode"):
         chi_square_attack(gray_img)
+
+
+# --- 4. Carrier Capacity Tests ---
+
+def test_calculate_carrier_capacity_valid():
+    """Verify carrier capacity calculation for known dimensions."""
+    # 100x100 RGB = 10,000 pixels * 3 channels = 30,000 bits = 3,750 bytes
+    img = Image.new("RGB", (100, 100))
+    max_bytes, safe_bytes = calculate_carrier_capacity(img)
+    assert max_bytes == 3750
+    assert safe_bytes == int(3750 * 0.15)
+    assert payload_fits(img, 3750) is True
+    assert payload_fits(img, 3751) is False
+
+
+def test_calculate_carrier_capacity_invalid_dimensions():
+    """Verify non-positive dimensions raise ValueError in capacity calculation."""
+    img = Image.new("RGB", (10, 10))
+    img._size = (0, 10)
+    with pytest.raises(ValueError, match="Invalid image dimensions"):
+        calculate_carrier_capacity(img)

@@ -14,9 +14,10 @@ from core.encoder import encode_payload
 from core.exceptions import (
     AuthenticationError,
     InsufficientCapacityError,
-     CorruptPayloadError,
+    CorruptPayloadError,
 )
 from core.payload import PAYLOAD_TYPE_BINARY, PAYLOAD_TYPE_TEXT
+from utils.image_utils import get_pixel_data
 
 
 @pytest.fixture
@@ -133,7 +134,7 @@ def test_tampered_stego_image_fails_safely(carrier_rgb_large):
     )
 
     # Flip LSB of first pixel in stego image
-    pixel_list = list(stego_img.getdata())
+    pixel_list = list(get_pixel_data(stego_img))
     r, g, b = pixel_list[0]
     pixel_list[0] = (r ^ 1, g, b)
 
@@ -204,3 +205,12 @@ def test_rgba_carrier_round_trip(carrier_rgba_large):
     recovered_data, _ = decode_payload(stego_img, passphrase)
     assert recovered_data == payload
     assert stego_img.mode == "RGBA"
+
+
+def test_empty_passphrase_rejected(carrier_rgb_large):
+    """Verify empty passphrases are rejected by encode and decode."""
+    with pytest.raises(ValueError, match="Passphrase cannot be empty"):
+        encode_payload(carrier_rgb_large, b"Data", "")
+
+    with pytest.raises(ValueError, match="Passphrase cannot be empty"):
+        decode_payload(carrier_rgb_large, "")

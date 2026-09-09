@@ -21,6 +21,7 @@ from core.payload import (
 from crypto.encryption import encrypt_payload
 from crypto.key_derivation import derive_key, generate_salt
 from stego.lsb import embed_lsb
+from utils.validation import validate_carrier_image, validate_passphrase
 
 
 def encode_payload(
@@ -48,6 +49,9 @@ def encode_payload(
     :raises InsufficientCapacityError: If envelope exceeds carrier pixel capacity.
     :raises ValueError: If image mode is unsupported or payload parameters invalid.
     """
+    validate_passphrase(passphrase)
+    validate_carrier_image(carrier_image)
+
     if payload_type not in (PAYLOAD_TYPE_TEXT, PAYLOAD_TYPE_BINARY):
         raise ValueError(f"Invalid payload type: {payload_type}")
 

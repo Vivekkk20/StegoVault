@@ -125,7 +125,7 @@ with tab_encode:
                         except StegoVaultError as err:
                             st.error(f"Encoding halted safely: {err}")
         except Exception as e:
-            st.error("Failed to process carrier image safely.")
+            st.error(f"Failed to process carrier image safely: {e}")
 
 # ----------------------------------------------------------------------
 # 2. DECODE TAB
@@ -187,8 +187,8 @@ with tab_decode:
                             st.error(f"Payload validation failure: {err}")
                         except StegoVaultError as err:
                             st.error(f"Extraction failed safely: {err}")
-        except Exception:
-            st.error("Failed to read image buffer.")
+        except Exception as e:
+            st.error(f"Failed to read image buffer: {e}")
 
 # ----------------------------------------------------------------------
 # 3. IMAGE QUALITY TAB

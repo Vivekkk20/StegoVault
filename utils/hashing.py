@@ -7,6 +7,7 @@ integrity verification, and diagnostic logging.
 from __future__ import annotations
 
 import hashlib
+import hmac
 
 
 def compute_sha256(data: bytes) -> str:
@@ -31,4 +32,4 @@ def verify_sha256(data: bytes, expected_hash: str) -> bool:
     """
     actual_hash = compute_sha256(data)
     # Using compare_digest to prevent timing side channels
-    return hashlib.compare_digest(actual_hash.lower(), expected_hash.lower())
+    return hmac.compare_digest(actual_hash.lower(), expected_hash.lower())

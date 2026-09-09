@@ -49,6 +49,9 @@ frontend/dist-ssr/
 Thumbs.db
 
 # StegoVault runtime storage
-backend/storage/temp/
+backend/storage/temp/*
+!backend/storage/temp/.gitkeep
 backend/storage/uploads/
+backend/storage/reports/*.json
 backend/storage/reports/*.tmp
+!backend/storage/reports/.gitkeep

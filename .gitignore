@@ -32,3 +32,6 @@ secrets/
 *.pem
 *.key
 *.secret
+
+# Editor settings
+.vscode/

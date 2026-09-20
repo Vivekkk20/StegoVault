@@ -16,7 +16,7 @@ from docx.oxml.ns import nsdecls, qn
 BASE_DIR = Path(__file__).resolve().parent.parent
 OUTPUT_DOCX = BASE_DIR / "StegoVault_Project_Report.docx"
 DOCS_DOCX = BASE_DIR / "docs" / "StegoVault_Project_Report.docx"
-SCREENSHOTS_DIR = BASE_DIR / "screenshots"
+SCREENSHOTS_DIR = BASE_DIR / "docs" / "screenshots"
 
 # Color Palette Constants
 COLOR_PRIMARY_HEX = "1B365D"       # Deep Navy
@@ -306,7 +306,7 @@ def build_extended_report():
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_sub.paragraph_format.space_after = Pt(48)
-    run_sub = p_sub.add_run("Cryptographic Steganography & Forensic Steganalysis Toolkit\n"
+    run_sub = p_sub.add_run("Cryptographic Steganography and Steganalysis Toolkit\n"
                             "A Defense-in-Depth Framework for Authenticated Secret Data Concealment")
     run_sub.font.name = "Calibri"
     run_sub.font.size = Pt(13)
@@ -457,7 +457,7 @@ def build_extended_report():
     add_custom_heading(doc, "3.1 College Certificate", level=2)
     add_body_paragraph(
         doc,
-        "This is to certify that the project entitled \"STEGOVAULT — Cryptographic Steganography & Steganalysis Toolkit\" "
+        "This is to certify that the project entitled \"STEGOVAULT — Cryptographic Steganography and Steganalysis Toolkit\" "
         "is a bonafide work carried out by Candidate Name (Roll No: CS-2022-XXXX) in partial fulfillment of the requirements for "
         "the award of the degree of Bachelor of Technology in Computer Science & Engineering during the academic year 2025–2026."
     )
@@ -833,7 +833,7 @@ def build_extended_report():
     format_table_header(obj_tbl.rows[0], obj_cw, ["Performance Dimension", "Target Benchmark", "Measured Result", "Verification Method"])
 
     obj_data = [
-        ("Cipher Security", "256-bit Symmetric AEAD", "AES-256-GCM + Poly1305", "NIST SP 800-38D Conformance Tests"),
+        ("Cipher Security", "256-bit Symmetric AEAD", "AES-256-GCM (128-bit GHASH)", "NIST SP 800-38D Conformance Tests"),
         ("KDF Memory Cost", ">= 16 MiB per derivation", "~16.0 MiB (N=16384, r=8)", "Scrypt RFC 7914 Test Vectors"),
         ("Perceptual Distortion", "PSNR > 60 dB (Safe Zone)", "PSNR >= 72.5 dB", "Image Quality Analysis Engine"),
         ("Mathematical MSE", "MSE < 0.01 per channel", "MSE <= 0.0028", "Spatial Difference Verification"),
@@ -1330,25 +1330,25 @@ def build_extended_report():
 
     add_image_figure(
         doc,
-        "01-dashboard.png",
+        "fig01_dashboard_overview.png",
         "Figure 9.1: StegoVault Interactive Dashboard — Multi-tab UI featuring Encode, Decode, Image Quality, and Steganalysis modules."
     )
 
     add_image_figure(
         doc,
-        "02-encode.png",
+        "fig02_encode_configured.png",
         "Figure 9.2: Secure Embedding Configuration — Uploading carrier image, selecting payload type (Text/Binary), and setting Scrypt passphrase."
     )
 
     add_image_figure(
         doc,
-        "03-encode-success.png",
+        "fig03_encode_success.png",
         "Figure 9.3: Authenticated Embedding Success — Completed zlib compression, AES-256-GCM encryption, and LSB embedding with instant PNG download."
     )
 
     add_image_figure(
         doc,
-        "04-decode-success.png",
+        "fig04_decode_success.png",
         "Figure 9.4: Decryption and Extraction Success — Validated GCM authentication tag, decrypted plaintext recovery, and integrity verification."
     )
 

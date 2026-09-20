@@ -38,7 +38,7 @@ from utils.validation import validate_carrier_image
 # PAGE CONFIGURATION & INJECTED THEME CSS
 # ----------------------------------------------------------------------
 st.set_page_config(
-    page_title="StegoVault — Cryptographic Steganography Toolkit",
+    page_title="StegoVault — Cryptographic Steganography and Steganalysis Toolkit",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -185,7 +185,7 @@ with st.sidebar:
     st.markdown("**🔒 Cryptographic Engine**")
     st.write("• **Cipher:** `AES-256-GCM` (AEAD)")
     st.write("• **KDF:** `Scrypt` (N=16384, r=8, p=1)")
-    st.write("• **Tag:** `128-bit` Poly1305 / GHASH")
+    st.write("• **Tag:** `128-bit` GHASH Authentication Tag")
     st.write("• **Salt & Nonce:** `16B Salt / 12B Nonce`")
 
     st.markdown("---")
